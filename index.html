@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Freezy Global</title>
+<link rel="stylesheet" href="style.css">
+<script src="cart.js"></script>
+</head>
+<body>
+<script>
+const user=JSON.parse(localStorage.getItem("loggedInUser"));if(!user){window.location.href="login.html";}
+</script>
+
+<header>
+<img src="logo.png" alt="Logo" class="logo">
+<h1>Freezy Global</h1>
+<p style="text-align:center;">Creating Ideas, Designing Dreams</p>
+<nav>
+<a href="index.html">Home</a> | 
+<a href="services.html">Services</a> | 
+<a href="checkout.html">Checkout</a>
+</nav>
+</header>
+
+<div style="text-align:center; margin:20px;">
+<button onclick="showCategory('products')">Products</button>
+<button onclick="showCategory('services')">Services</button>
+</div>
+
+<div id="products" style="display:flex; flex-wrap:wrap; justify-content:center;"></div>
+<div id="services" style="display:none; flex-wrap:wrap; justify-content:center;"></div>
+
+<div class="floating-cart" id="floatingCart" onclick="window.location.href='checkout.html'">
+🛒 Cart (<span id="cartCount">0</span>)
+</div>
+
+<script>
+let productsList=JSON.parse(localStorage.getItem("products"))||[
+{id:1,name:"Phone Case",price:1500,img:"https://via.placeholder.com/200"},
+{id:2,name:"Headphones",price:3000,img:"https://via.placeholder.com/200"}
+];
+let servicesList=JSON.parse(localStorage.getItem("services"))||[
+{id:1,name:"Logo Design",img:"https://via.placeholder.com/200",whatsapp:"https://wa.me/2348120610962?text=I want Logo Design"}
+];
+
+function showCategory(type){
+  if(type==="products"){
+    const container=document.getElementById("products");
+    container.innerHTML="";
+    productsList.forEach(p=>{
+      const card=document.createElement("div"); card.className="card";
+      card.innerHTML=`<img src="${p.img}"><h3>${p.name}</h3><p>₦${p.price}</p>
+      <div><button onclick="changeQty(${p.id},-1)">-</button><span id="qty-${p.id}">1</span><button onclick="changeQty(${p.id},1)">+</button></div>
+      <button onclick="addToCart(${p.id}, productsList)">Add to Cart</button>`;
+      container.appendChild(card);
+    });
+    document.getElementById("products").style.display="flex";
+    document.getElementById("services").style.display="none";
+  } else {
+    const container=document.getElementById("services");
+    container.innerHTML="";
+    servicesList.forEach(s=>{
+      const card=document.createElement("div"); card.className="card";
+      card.innerHTML=`<img src="${s.img}"><h3>${s.name}</h3>
+      <button onclick="window.open('${s.whatsapp}','_blank')">Message on WhatsApp</button>`;
+      container.appendChild(card);
+    });
+    document.getElementById("services").style.display="flex";
+    document.getElementById("products").style.display="none";
+  }
+}
+showCategory("products");
+updateFloatingCart();
+</script>
+</body>
+</html>
